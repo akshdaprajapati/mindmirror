@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MindMirror — PCL-R decision support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2B2440;--ink-soft:#5C5470;--ink-faint:#938CA8;
+    --peri:#6C5CE7;--peri-soft:#B7AEF6;--peri-wash:#ECE8FE;
+    --blush:#FF9EC0;--blush-wash:#FFE6EF;
+    --mint:#46C79B;--mint-wash:#DCF6EC;
+    --butter:#FFC95C;--butter-wash:#FFF2D4;
+    --sky:#73C2EE;--sky-wash:#E1F2FC;
+    --card:#FFFFFF;--line:rgba(43,36,64,.09);--line-2:rgba(43,36,64,.06);
+    --shadow:0 18px 40px -26px rgba(43,36,64,.5);--shadow-sm:0 8px 20px -16px rgba(43,36,64,.5);
+    --ff-d:'Fraunces',Georgia,serif;--ff-b:'Space Grotesk',system-ui,sans-serif;--ff-m:'Space Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:var(--ff-b);color:var(--ink);min-height:100vh;
+    background:radial-gradient(110% 70% at 0% 0%, #FDF1F0 0%, transparent 50%),
+               radial-gradient(100% 80% at 100% 0%, #EDE6FB 0%, transparent 48%),
+               linear-gradient(160deg,#F4F0FB,#ECE6F7);-webkit-font-smoothing:antialiased}
+  .blob{position:fixed;border-radius:50%;filter:blur(50px);z-index:0;pointer-events:none;opacity:.4}
+  .blob.a{width:360px;height:360px;background:var(--peri-soft);top:-120px;right:8%}
+  .blob.b{width:300px;height:300px;background:var(--blush);bottom:-120px;left:18%;opacity:.32}
+
+  .app{position:relative;z-index:1;display:grid;grid-template-columns:236px 1fr;gap:22px;max-width:1240px;margin:0 auto;padding:22px;min-height:100vh}
+
+  /* sidebar */
+  .side{position:sticky;top:22px;align-self:start;height:calc(100vh - 44px);background:var(--card);border:1px solid var(--line-2);border-radius:26px;box-shadow:var(--shadow);padding:20px 16px;display:flex;flex-direction:column}
+  .brand{display:flex;align-items:center;gap:11px;padding:4px 6px 18px;border-bottom:1px solid var(--line);margin-bottom:14px}
+  .brand .logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(150deg,var(--peri),#8B79F0);display:grid;place-items:center;flex:none;box-shadow:var(--shadow-sm)}
+  .brand b{font-family:var(--ff-d);font-weight:600;font-size:21px}
+  .brand small{display:block;font-size:9.5px;color:var(--ink-faint);font-family:var(--ff-m);letter-spacing:.04em;margin-top:-2px}
+  .navbtn{display:flex;align-items:center;gap:12px;width:100%;border:none;background:none;cursor:pointer;font-family:var(--ff-b);font-weight:600;font-size:14px;color:var(--ink-soft);padding:11px 12px;border-radius:14px;margin-bottom:3px;transition:.15s;text-align:left}
+  .navbtn svg{width:20px;height:20px;stroke:var(--ink-faint);flex:none;transition:.15s}
+  .navbtn:hover{background:#FAF8FF}
+  .navbtn.on{background:var(--peri-wash);color:var(--peri)}
+  .navbtn.on svg{stroke:var(--peri)}
+  .navbtn .n{margin-left:auto;font-family:var(--ff-m);font-size:10px;font-weight:700;color:var(--ink-faint);background:#fff;border:1px solid var(--line);border-radius:999px;padding:2px 7px}
+  .navbtn.on .n{color:var(--peri);border-color:var(--peri-soft);background:#fff}
+  .side .who{margin-top:auto;display:flex;align-items:center;gap:10px;padding:11px;border-radius:14px;background:#FAF8FF;border:1px solid var(--line-2)}
+  .side .who .av{width:34px;height:34px;border-radius:10px;background:linear-gradient(150deg,#46C79B,#2fb487);display:grid;place-items:center;color:#fff;font-family:var(--ff-d);font-weight:600;font-size:14px}
+  .side .who .nm{font-weight:600;font-size:13px}
+  .side .who .rl{font-size:10px;color:var(--ink-faint);font-family:var(--ff-m)}
+
+  /* main */
+  .main{min-width:0}
+  .head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+  .title h2{font-family:var(--ff-d);font-weight:600;font-size:27px;margin:0;letter-spacing:-.01em}
+  .title .crumb{font-family:var(--ff-m);font-size:11px;color:var(--ink-faint);letter-spacing:.04em;margin-top:3px}
+  .head .right{display:flex;align-items:center;gap:12px}
+
+  .view.hidden{display:none}
+
+  /* small ui atoms */
+  .chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--ff-m);font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:6px 11px;border-radius:999px}
+  .chip.peri{background:var(--peri-wash);color:var(--peri)}
+  .chip.mint{background:var(--mint-wash);color:#16916a}
+  .chip.blush{background:var(--blush-wash);color:#c84f7e}
+  .chip.butter{background:var(--butter-wash);color:#a9750c}
+  .chip.line{background:#fff;border:1px solid var(--line);color:var(--ink-soft)}
+  .btn{font-family:var(--ff-b);font-weight:600;font-size:13px;padding:10px 16px;border-radius:13px;border:none;cursor:pointer}
+  .btn.solid{background:var(--ink);color:#fff}.btn.solid:hover{background:var(--peri)}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink-soft)}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+
+  /* CASELOAD */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .case{background:var(--card);border:1px solid var(--line-2);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px;cursor:pointer;transition:.18s;text-align:left;font-family:inherit}
+  .case:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .case .av{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:#fff;font-family:var(--ff-d);font-weight:600;font-size:18px;margin-bottom:13px}
+  .case .nm{font-weight:600;font-size:16px}
+  .case .mb{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin:13px 0 8px}
+  .case .mb i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--peri),var(--peri-soft))}
+  .case .foot{display:flex;align-items:center;justify-content:space-between;font-family:var(--ff-m);font-size:10.5px;color:var(--ink-faint)}
+
+  /* ASSESS */
+  .sumbar{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--line-2);border-radius:20px;box-shadow:var(--shadow-sm);padding:14px 20px;margin-bottom:8px}
+  .sumbar .tot{font-family:var(--ff-d);font-weight:600;font-size:30px;line-height:1}
+  .sumbar .tot small{font-family:var(--ff-m);font-size:13px;color:var(--ink-faint);font-weight:400}
+  .sumbar .fac{display:flex;gap:8px}
+  .fchip{font-family:var(--ff-m);font-size:11px;font-weight:700;padding:7px 11px;border-radius:11px;background:#FAF8FF;border:1px solid var(--line);color:var(--ink-soft)}
+  .fchip b{color:var(--ink)}
+  .sumbar .pl{flex:1;min-width:80px;height:6px;border-radius:6px;background:var(--line);overflow:hidden}
+  .sumbar .pl i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--mint),var(--sky));transition:width .35s}
+
+  .sec{font-family:var(--ff-m);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);display:flex;align-items:center;gap:10px;margin:20px 2px 12px}
+  .sec::after{content:"";flex:1;height:1px;background:var(--line)}
+  .igrid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+
+  .item{background:var(--card);border:1px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-sm);padding:15px;position:relative;overflow:hidden}
+  .item .top{display:flex;align-items:center;gap:10px}
+  .idx{font-family:var(--ff-m);font-size:11px;font-weight:700;color:var(--peri);background:var(--peri-wash);width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex:none}
+  .item .lbl{font-weight:600;font-size:14px;line-height:1.2}
+  .airow{display:flex;align-items:center;gap:10px;margin:12px 0 0}
+  .ai{display:inline-flex;align-items:center;gap:6px;font-family:var(--ff-m);font-size:10.5px;font-weight:700;color:var(--peri);background:var(--peri-wash);padding:5px 9px;border-radius:9px;white-space:nowrap}
+  .meter{flex:1;min-width:30px;height:5px;border-radius:5px;background:rgba(108,92,231,.16);overflow:hidden}
+  .meter i{display:block;height:100%;border-radius:5px;background:var(--peri)}
+  .pct{font-family:var(--ff-m);font-size:10px;font-weight:700;color:var(--peri)}
+  .eye{border:none;background:none;cursor:pointer;color:var(--ink-faint);display:grid;place-items:center;padding:4px;border-radius:8px;flex:none}
+  .eye:hover{color:var(--peri);background:var(--peri-wash)}
+  .rate{display:flex;gap:7px;margin-top:12px}
+  .rate button{flex:1;font-family:var(--ff-b);font-weight:700;font-size:13px;padding:9px 0;border-radius:11px;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;transition:.13s}
+  .rate button:hover{border-color:var(--peri-soft)}
+  .rate button.on{background:var(--peri);border-color:var(--peri);color:#fff}
+  .item.confirmed{border-color:var(--mint);box-shadow:0 0 0 1px var(--mint-wash),var(--shadow-sm)}
+  .flag{position:absolute;top:0;right:0;font-family:var(--ff-m);font-size:9px;font-weight:700;padding:4px 9px;border-bottom-left-radius:10px}
+  .flag.ok{background:var(--mint-wash);color:#16916a}.flag.ovr{background:var(--butter-wash);color:#a9750c}
+
+  /* PROFILE */
+  .pcols{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
+  .ring-card{background:var(--card);border:1px solid var(--line-2);border-radius:22px;box-shadow:var(--shadow);padding:22px;text-align:center}
+  .big-ring{--p:0;width:168px;height:168px;border-radius:50%;margin:6px auto;background:conic-gradient(var(--peri) calc(var(--p)*1%),var(--peri-wash) 0);display:grid;place-items:center;position:relative}
+  .big-ring::before{content:"";position:absolute;inset:14px;border-radius:50%;background:#fff}
+  .big-ring .v{position:relative;z-index:1}
+  .big-ring .v b{font-family:var(--ff-d);font-weight:600;font-size:46px;line-height:1}
+  .big-ring .v span{font-family:var(--ff-m);font-size:13px;color:var(--ink-faint)}
+  .pcard{background:var(--card);border:1px solid var(--line-2);border-radius:22px;box-shadow:var(--shadow-sm);padding:20px}
+  .fbar{margin-bottom:16px}.fbar:last-child{margin-bottom:0}
+  .fbar .hd{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}
+  .fbar .hd b{font-weight:600}.fbar .hd .sc{font-family:var(--ff-m);font-size:12px;color:var(--ink-soft)}
+  .track{height:12px;border-radius:12px;background:var(--line);overflow:hidden}
+  .track i{display:block;height:100%;border-radius:12px;transition:width .5s}
+  .refs{display:flex;gap:10px;margin-top:18px}
+  .ref{flex:1;background:var(--sky-wash);border:1px solid #c7e6f7;border-radius:14px;padding:13px;text-align:center}
+  .ref .rn{font-family:var(--ff-m);font-weight:700;font-size:17px;color:#1d7fb0}
+  .ref .rl{font-size:10px;color:var(--ink-soft);margin-top:3px}
+
+  /* TRUST */
+  .tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .tile{background:var(--card);border:1px solid var(--line-2);border-radius:20px;box-shadow:var(--shadow-sm);padding:18px}
+  .tile .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;margin-bottom:12px}
+  .tile .big{font-family:var(--ff-d);font-weight:600;font-size:24px;line-height:1}
+  .tile .lb{font-size:12px;color:var(--ink-soft);margin-top:5px;line-height:1.3}
+  .tile .tl{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:11px}
+  .tile .tl i{display:block;height:100%;border-radius:6px}
+  .audit{font-family:var(--ff-m);font-size:11.5px;color:var(--ink-soft);line-height:1.9;background:var(--card);border:1px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-sm);padding:16px 18px;margin-top:14px}
+  .audit .t{color:var(--peri);font-weight:700}
+
+  /* drawer */
+  .scrim{position:fixed;inset:0;background:rgba(20,16,38,.4);z-index:60;opacity:0;pointer-events:none;transition:.25s}
+  .scrim.open{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;height:100vh;width:400px;max-width:92vw;background:#fff;z-index:61;transform:translateX(110%);transition:transform .32s cubic-bezier(.2,.9,.3,1);box-shadow:-20px 0 60px -20px rgba(43,36,64,.5);display:flex;flex-direction:column}
+  .drawer.open{transform:translateX(0)}
+  .dhead{padding:22px 24px 16px;border-bottom:1px solid var(--line)}
+  .dhead .x{float:right;border:none;background:#FAF8FF;border-radius:10px;width:30px;height:30px;cursor:pointer;color:var(--ink-soft);font-size:16px}
+  .dhead .ek{font-family:var(--ff-m);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--peri);font-weight:700}
+  .dhead h3{font-family:var(--ff-d);font-weight:600;font-size:20px;margin:6px 0 0}
+  .dbody{overflow-y:auto;padding:18px 24px 28px}
+  .why{background:var(--peri-wash);border-radius:14px;padding:13px 14px;font-size:12.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:16px}
+  .why b{color:var(--ink)}
+  .src{border-left:3px solid var(--peri-soft);padding:3px 0 3px 13px;margin-bottom:14px}
+  .src .stag{font-family:var(--ff-m);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;margin-bottom:5px}
+  .src p{margin:0;font-size:12.5px;line-height:1.5}
+  .hl{background:var(--butter-wash);padding:1px 3px;border-radius:4px}
+  .disc{font-size:11px;color:var(--ink-faint);line-height:1.45;background:#FAF8FF;border:1px dashed var(--line);border-radius:12px;padding:11px 12px}
+
+  @media (max-width:980px){
+    .app{grid-template-columns:1fr}
+    .side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px}
+    .brand{border:none;margin:0;padding:4px 8px 4px 4px}
+    .navbtn{width:auto}.navbtn .n{display:none}.side .who{margin:0 0 0 auto}
+    .grid3{grid-template-columns:1fr 1fr}.tgrid{grid-template-columns:1fr 1fr}.pcols{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){.igrid{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.tgrid{grid-template-columns:1fr 1fr}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  button:focus-visible,.case:focus-visible{outline:3px solid var(--peri-soft);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="blob a"></div><div class="blob b"></div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="brand">
+      <div class="logo">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="10.6" rx="6.3" ry="7.4" fill="#fff" opacity=".22"/><ellipse cx="12" cy="10.6" rx="6.3" ry="7.4" stroke="#fff" stroke-width="1.6"/><path d="M9.2 6.4c-1.5 1-2.2 2.5-2.2 4.2" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".85"/><path d="M10.4 19.9h3.2M12 18.1V22" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div><b>MindMirror</b><small>PCL‑R SUPPORT</small></div>
+    </div>
+    <button class="navbtn on" id="n-case" onclick="go('case')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg>Caseload<span class="n">3</span></button>
+    <button class="navbtn" id="n-assess" onclick="go('assess')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9M3 20l1-4 11-11 3 3-11 11z"/></svg>Assess<span class="n" id="nav-done">17</span></button>
+    <button class="navbtn" id="n-profile" onclick="go('profile')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Profile</button>
+    <button class="navbtn" id="n-trust" onclick="go('trust')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7z"/></svg>Trust</button>
+    <div class="who"><div class="av">IM</div><div><div class="nm">Dr. Imran</div><div class="rl">FORENSIC</div></div></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- CASELOAD -->
+    <section class="view" id="v-case">
+      <div class="head"><div class="title"><h2>Caseload</h2><div class="crumb">3 ASSESSMENTS · TODAY</div></div></div>
+      <div class="grid3">
+        <button class="case" onclick="go('assess')">
+          <div class="av" style="background:linear-gradient(150deg,#6C5CE7,#8B79F0)">AS</div>
+          <div class="nm">A. Sharma</div>
+          <div class="mb"><i style="width:85%"></i></div>
+          <div class="foot"><span>17 / 20</span><span class="chip peri">RESUME</span></div>
+        </button>
+        <button class="case" onclick="go('assess')">
+          <div class="av" style="background:linear-gradient(150deg,#FF9EC0,#F97aa6)">PN</div>
+          <div class="nm">P. Nair</div>
+          <div class="mb"><i style="width:12%"></i></div>
+          <div class="foot"><span>2 / 20</span><span class="chip blush">NEW</span></div>
+        </button>
+        <button class="case" onclick="go('profile')">
+          <div class="av" style="background:linear-gradient(150deg,#46C79B,#2fb487)">RI</div>
+          <div class="nm">R. Iyer</div>
+          <div class="mb"><i style="width:100%"></i></div>
+          <div class="foot"><span>20 / 20</span><span class="chip butter">SIGN‑OFF</span></div>
+        </button>
+      </div>
+      <div class="sec">This week</div>
+      <div class="grid3">
+        <div class="tile"><div class="big">12</div><div class="lb">Assessments supported</div></div>
+        <div class="tile"><div class="big">94%</div><div class="lb">Suggestions confirmed</div></div>
+        <div class="tile"><div class="big">0.78</div><div class="lb">Agreement with expert raters</div></div>
+      </div>
+    </section>
+
+    <!-- ASSESS -->
+    <section class="view hidden" id="v-assess">
+      <div class="head">
+        <div class="title"><h2>A. Sharma</h2><div class="crumb">CASE #4821 · DRAFT</div></div>
+        <div class="right"><span class="chip peri">AI SUGGESTS · YOU CONFIRM</span><button class="btn solid" onclick="go('profile')">Profile →</button></div>
+      </div>
+      <div class="sumbar">
+        <div class="tot" id="tot">0<small> / 40</small></div>
+        <div class="fac"><span class="fchip">F1 <b id="f1n">0</b>/16</span><span class="fchip">F2 <b id="f2n">0</b>/18</span></div>
+        <div class="pl"><i id="prog" style="width:0%"></i></div>
+      </div>
+      <div class="sec">Factor 1 · Interpersonal / Affective</div><div class="igrid" id="f1-items"></div>
+      <div class="sec">Factor 2 · Lifestyle / Antisocial</div><div class="igrid" id="f2-items"></div>
+      <div class="sec">Additional</div><div class="igrid" id="add-items"></div>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="view hidden" id="v-profile">
+      <div class="head">
+        <div class="title"><h2>Profile</h2><div class="crumb">A. SHARMA · #4821</div></div>
+        <div class="right"><span class="chip butter">DRAFT — UNSIGNED</span><button class="btn solid">Sign &amp; export</button></div>
+      </div>
+      <div class="pcols">
+        <div class="ring-card">
+          <span class="chip peri">PCL‑R TOTAL</span>
+          <div class="big-ring" id="bigRing" style="--p:0"><div class="v"><b id="insTotal">0</b><span> / 40</span></div></div>
+          <div style="font-size:11px;color:var(--ink-faint);font-family:var(--ff-m)">SUM OF 20 ITEMS</div>
+        </div>
+        <div class="pcard">
+          <div class="fbar"><div class="hd"><b>Factor 1 · Interpersonal / Affective</b><span class="sc" id="ins-f1">0/16</span></div><div class="track"><i id="bar-f1" style="width:0%;background:linear-gradient(90deg,#6C5CE7,#B7AEF6)"></i></div></div>
+          <div class="fbar"><div class="hd"><b>Factor 2 · Lifestyle / Antisocial</b><span class="sc" id="ins-f2">0/18</span></div><div class="track"><i id="bar-f2" style="width:0%;background:linear-gradient(90deg,#FF9EC0,#FFC95C)"></i></div></div>
+          <div class="fbar"><div class="hd"><b>Additional</b><span class="sc" id="ins-add">0/6</span></div><div class="track"><i id="bar-add" style="width:0%;background:linear-gradient(90deg,#46C79B,#73C2EE)"></i></div></div>
+          <div class="refs">
+            <div class="ref"><div class="rn">≥ 30</div><div class="rl">N. America ref.</div></div>
+            <div class="ref"><div class="rn">≥ 25</div><div class="rl">UK / Europe ref.</div></div>
+            <div class="ref"><div class="rn">—</div><div class="rl">MindMirror sets no label</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST -->
+    <section class="view hidden" id="v-trust">
+      <div class="head"><div class="title"><h2>Trust &amp; oversight</h2><div class="crumb">ACCOUNTABILITY AT A GLANCE</div></div></div>
+      <div class="tgrid">
+        <div class="tile"><div class="ic" style="background:var(--peri-wash)"><svg width="20" height="20" fill="none" stroke="#6C5CE7" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div class="big">100%</div><div class="lb">Human‑in‑the‑loop</div></div>
+        <div class="tile"><div class="ic" style="background:var(--mint-wash)"><svg width="20" height="20" fill="none" stroke="#16916a" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div><div class="big">0.78</div><div class="lb">Agreement (ICC)</div><div class="tl"><i style="width:78%;background:linear-gradient(90deg,#46C79B,#73C2EE)"></i></div></div>
+        <div class="tile"><div class="ic" style="background:var(--butter-wash)"><svg width="20" height="20" fill="none" stroke="#a9750c" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/></svg></div><div class="big">11/12</div><div class="lb">Fairness checks pass</div><div class="tl"><i style="width:92%;background:linear-gradient(90deg,#FFC95C,#FF9EC0)"></i></div></div>
+        <div class="tile"><div class="ic" style="background:var(--sky-wash)"><svg width="20" height="20" fill="none" stroke="#1d7fb0" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><div class="big">In‑house</div><div class="lb">Encrypted, access‑logged</div></div>
+      </div>
+      <div class="sec">Audit trail · #4821</div>
+      <div class="audit">
+        <span class="t">09:12</span> · Suggestions generated · 20 items<br>
+        <span class="t">09:31</span> · Item 5 overridden · AI 2 → clinician 1<br>
+        <span class="t">09:44</span> · Evidence reviewed · items 6, 8, 16<br>
+        <span class="t">—:—</span> · Awaiting sign‑off
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- drawer -->
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="dhead"><button class="x" onclick="closeDrawer()">✕</button><div class="ek" id="d-tag">EVIDENCE</div><h3 id="d-title">—</h3></div>
+  <div class="dbody" id="d-body"></div>
+</aside>
+
+<script>
+const ITEMS=[
+ {n:1,f:'f1',label:'Glibness / superficial charm',ai:2,conf:71,why:'Smooth, performative interpersonal style noted across the interview and staff records.',ev:[['Interview · 08:14','Opened by <span class="hl">complimenting the assessor</span>, deflecting hard questions with charm.'],['File · staff notes','Described as a <span class="hl">"charming, smooth talker."</span>']]},
+ {n:2,f:'f1',label:'Grandiose sense of self‑worth',ai:1,conf:58,why:'Some self‑aggrandising statements, balanced by candid self‑appraisal.',ev:[['Interview · 22:40','Abilities described as <span class="hl">"wasted on people who can\'t keep up."</span>']]},
+ {n:4,f:'f1',label:'Pathological lying',ai:2,conf:64,why:'Self‑report contradicted by verifiable records in several domains.',ev:[['File cross‑check','Employment history <span class="hl">contradicted by three records.</span>'],['Interview · 31:05','Account of the index event shifted twice.']]},
+ {n:5,f:'f1',label:'Cunning / manipulative',ai:1,conf:52,why:'Instrumental influence over others present; severity ambiguous.',ev:[['Collateral','An associate was <span class="hl">"talked into"</span> covering shortfalls.']]},
+ {n:6,f:'f1',label:'Lack of remorse or guilt',ai:2,conf:69,why:'Harm minimised and responsibility externalised to victims.',ev:[['Interview · 44:20','<span class="hl">"They put themselves in that position."</span>'],['File · victim','No restitution; events called <span class="hl">"overblown."</span>']]},
+ {n:7,f:'f1',label:'Shallow affect',ai:1,conf:49,why:'Affect appeared constricted in places — low confidence, observe directly.',ev:[['Observation','Charged events described in a <span class="hl">flat register.</span>']]},
+ {n:8,f:'f1',label:'Callous / lack of empathy',ai:2,conf:66,why:'Transactional view of relationships; dismissive of others.',ev:[['Interview · 39:12','Referred to dependents by <span class="hl">what they provide.</span>']]},
+ {n:16,f:'f1',label:'Failure to accept responsibility',ai:2,conf:73,why:'Consistent externalisation of blame across incidents.',ev:[['Interview · 12:50','Incidents attributed to <span class="hl">"bad luck or other people."</span>'],['File','Blame pattern noted by two prior assessors.']]},
+ {n:3,f:'f2',label:'Need for stimulation / boredom',ai:2,conf:62,why:'Thrill‑seeking and rapid disengagement from routine.',ev:[['File','Roles <span class="hl">abandoned within weeks</span> "once boring."']]},
+ {n:9,f:'f2',label:'Parasitic lifestyle',ai:1,conf:47,why:'Some financial reliance, partly circumstantial.',ev:[['Collateral','Lived with relatives <span class="hl">contributing little.</span>']]},
+ {n:10,f:'f2',label:'Poor behavioural controls',ai:2,conf:70,why:'Disproportionate, short‑fuse reactions documented.',ev:[['Incident log','Several <span class="hl">altercations over minor triggers.</span>']]},
+ {n:12,f:'f2',label:'Early behavioural problems',ai:2,conf:81,why:'Early‑onset conduct difficulties in school records.',ev:[['School','<span class="hl">Suspensions before age 12.</span>']]},
+ {n:13,f:'f2',label:'Lack of realistic long‑term goals',ai:1,conf:55,why:'Goals vague and shifting.',ev:[['Interview · 50:02','Plans in <span class="hl">broad, changing terms.</span>']]},
+ {n:14,f:'f2',label:'Impulsivity',ai:2,conf:67,why:'Consequential decisions made "on the spot."',ev:[['Interview · 28:31','Relocated cities <span class="hl">"on a whim."</span>']]},
+ {n:15,f:'f2',label:'Irresponsibility',ai:2,conf:64,why:'Unmet obligations across domains.',ev:[['File','<span class="hl">Missed payments, broken commitments.</span>']]},
+ {n:18,f:'f2',label:'Juvenile delinquency',ai:1,conf:60,why:'Adolescent involvement present but limited.',ev:[['Youth record','One <span class="hl">adolescent offence.</span>']]},
+ {n:19,f:'f2',label:'Revocation of conditional release',ai:0,conf:84,why:'No revocation recorded in the file.',ev:[['Supervision','<span class="hl">No revocations recorded.</span>']]},
+ {n:11,f:'add',label:'Promiscuous sexual behaviour',ai:1,conf:43,why:'Self‑report only — low confidence.',ev:[['Interview','<span class="hl">Little corroborating detail.</span>']]},
+ {n:17,f:'add',label:'Many short‑term marital relationships',ai:1,conf:57,why:'Two brief relationships noted.',ev:[['File','<span class="hl">Two under two years</span> each.']]},
+ {n:20,f:'add',label:'Criminal versatility',ai:1,conf:59,why:'Offences span a moderate range.',ev:[['Record','Charges across <span class="hl">three categories.</span>']]},
+];
+const lab={0:'Absent',1:'Maybe',2:'Present'};
+const state={};
+const itemHTML=it=>`
+ <div class="item" id="it${it.n}">
+   <div class="flag ok" style="display:none">✓</div><div class="flag ovr" style="display:none">EDITED</div>
+   <div class="top"><div class="idx">${it.n}</div><div class="lbl">${it.label}</div></div>
+   <div class="airow">
+     <span class="ai">◆ AI ${it.ai}</span>
+     <span class="meter"><i style="width:${it.conf}%"></i></span><span class="pct">${it.conf}%</span>
+     <button class="eye" title="Evidence" onclick="openDrawer(${it.n})"><svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="2.6"/></svg></button>
+   </div>
+   <div class="rate">${[0,1,2].map(v=>`<button onclick="rate(${it.n},${v})" data-v="${v}">${v}</button>`).join('')}</div>
+ </div>`;
+function mount(){
+  f1items.innerHTML=ITEMS.filter(i=>i.f==='f1').map(itemHTML).join('');
+  f2items.innerHTML=ITEMS.filter(i=>i.f==='f2').map(itemHTML).join('');
+  additems.innerHTML=ITEMS.filter(i=>i.f==='add').map(itemHTML).join('');
+}
+const $=id=>document.getElementById(id);
+const f1items=$('f1-items'),f2items=$('f2-items'),additems=$('add-items');
+function rate(n,v){
+  state[n]=v;const it=ITEMS.find(i=>i.n===n);const box=$('it'+n);
+  box.querySelectorAll('.rate button').forEach(b=>b.classList.toggle('on',+b.dataset.v===v));
+  box.classList.add('confirmed');const ovr=v!==it.ai;
+  box.querySelector('.flag.ovr').style.display=ovr?'block':'none';
+  box.querySelector('.flag.ok').style.display=ovr?'none':'block';
+  recompute();
+}
+const sub=f=>ITEMS.filter(i=>i.f===f).reduce((s,i)=>s+(state[i.n]??0),0);
+function recompute(){
+  const f1=sub('f1'),f2=sub('f2'),add=sub('add'),total=f1+f2+add,done=Object.keys(state).length;
+  $('tot').innerHTML=total+'<small> / 40</small>';$('f1n').textContent=f1;$('f2n').textContent=f2;
+  $('prog').style.width=(done/20*100)+'%';$('nav-done').textContent=done;
+  $('insTotal').textContent=total;$('bigRing').style.setProperty('--p',total/40*100);
+  $('ins-f1').textContent=f1+'/16';$('ins-f2').textContent=f2+'/18';$('ins-add').textContent=add+'/6';
+  $('bar-f1').style.width=(f1/16*100)+'%';$('bar-f2').style.width=(f2/18*100)+'%';$('bar-add').style.width=(add/6*100)+'%';
+}
+function openDrawer(n){
+  const it=ITEMS.find(i=>i.n===n);
+  $('d-tag').textContent='EVIDENCE · ITEM '+it.n;$('d-title').textContent=it.label;
+  $('d-body').innerHTML=`<div class="why"><b>AI ${it.ai} · ${lab[it.ai]} · ${it.conf}%.</b> ${it.why}</div>`+
+    it.ev.map(([t,x])=>`<div class="src"><div class="stag">${t}</div><p>${x}</p></div>`).join('')+
+    `<div class="disc">Pointers from the record — not proof. Confirm only what you can substantiate.</div>`;
+  $('scrim').classList.add('open');$('drawer').classList.add('open');
+}
+function closeDrawer(){$('scrim').classList.remove('open');$('drawer').classList.remove('open');}
+const views=['case','assess','profile','trust'];
+function go(v){
+  views.forEach(x=>$('v-'+x).classList.toggle('hidden',x!==v));
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('on'));
+  $('n-'+v).classList.add('on');window.scrollTo(0,0);
+}
+mount();
+ITEMS.slice(0,17).forEach(it=>rate(it.n,it.n===5?1:it.ai));
+go('case');
+</script>
+</body>
+</html>
