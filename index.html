@@ -63,6 +63,15 @@
   .btn.solid{background:var(--ink);color:#fff}.btn.solid:hover{background:var(--peri)}
   .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink-soft)}
   .btn.ghost:hover{border-color:var(--peri-soft)}
+  .btn.danger{background:#E14B6A;color:#fff}.btn.danger:hover{background:#c93a58}
+
+  .case-wrap{position:relative}
+  .del{position:absolute;top:12px;right:12px;z-index:2;width:30px;height:30px;border-radius:9px;border:none;background:#fff;box-shadow:var(--shadow-sm);color:var(--ink-faint);cursor:pointer;display:grid;place-items:center;opacity:0;transition:.15s}
+  .case-wrap:hover .del{opacity:1}
+  .del:hover{background:var(--blush-wash);color:#c84f7e}
+  @media (hover:none){.del{opacity:.6}}
+  .dmodal p{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0}
+  .dmodal p b{color:var(--ink)}
 
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .case{background:var(--card);border:1px solid var(--line-2);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px;cursor:pointer;transition:.18s;text-align:left;font-family:inherit}
@@ -275,6 +284,14 @@
   <div class="mrow"><button class="btn ghost" onclick="closeNew()">Cancel</button><button class="btn solid" onclick="createCase()">Create</button></div>
 </div>
 
+<!-- delete confirm modal -->
+<div class="scrim" id="dscrim" onclick="closeDel()"></div>
+<div class="modal dmodal" id="dmodal" role="dialog" aria-modal="true" aria-label="Delete assessment">
+  <div class="ek">Delete assessment</div>
+  <p id="dtext">—</p>
+  <div class="mrow"><button class="btn ghost" onclick="closeDel()">Cancel</button><button class="btn danger" onclick="confirmDel()">Delete</button></div>
+</div>
+
 <script>
 const ITEMS=[
  {n:1,f:'f1',label:'Glibness / superficial charm',ai:2,conf:71,why:'Smooth, performative interpersonal style noted across the interview and staff records.',ev:[['Interview · 08:14','Opened by <span class="hl">complimenting the assessor</span>, deflecting hard questions with charm.'],['File · staff notes','Described as a <span class="hl">"charming, smooth talker."</span>']]},
@@ -338,23 +355,49 @@ function statusChip(done){
   if(done>=20) return '<span class="chip butter">SIGN‑OFF</span>';
   return '<span class="chip peri">RESUME</span>';
 }
+const esc=s=>(''+s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function renderCases(){
-  $('caseGrid').innerHTML=cases.map(c=>{
-    const done=Object.keys(c.ratings).length;
-    return `<button class="case" onclick="openCase('${c.id}')">
-      <div class="av" style="background:${c.grad}">${c.init}</div>
-      <div class="nm">${c.name}</div>
-      <div class="mb"><i style="width:${done/20*100}%"></i></div>
-      <div class="foot"><span>${done} / 20</span>${statusChip(done)}</div>
-    </button>`;
-  }).join('');
+  if(cases.length===0){
+    $('caseGrid').innerHTML='<div class="empty" style="grid-column:1/-1">No assessments yet. Tap “New assessment” to start one.</div>';
+  }else{
+    $('caseGrid').innerHTML=cases.map(c=>{
+      const done=Object.keys(c.ratings).length;
+      return `<div class="case-wrap">
+        <button class="del" title="Delete assessment" aria-label="Delete ${esc(c.name)}" onclick="askDel('${c.id}')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M6 7l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13"/></svg></button>
+        <button class="case" onclick="openCase('${c.id}')">
+          <div class="av" style="background:${c.grad}">${esc(c.init)}</div>
+          <div class="nm">${esc(c.name)}</div>
+          <div class="mb"><i style="width:${done/20*100}%"></i></div>
+          <div class="foot"><span>${done} / 20</span>${statusChip(done)}</div>
+        </button>
+      </div>`;
+    }).join('');
+  }
   $('caseCount').textContent=cases.length;
   $('navCase').textContent=cases.length;
+}
+
+/* ---- delete a case ---- */
+let pendingDel=null;
+function askDel(id){
+  pendingDel=id;const c=cases.find(x=>x.id===id);if(!c)return;
+  $('dtext').innerHTML='Delete <b>'+esc(c.name)+'</b>? This can’t be undone.';
+  $('dscrim').classList.add('open');$('dmodal').classList.add('open');
+}
+function closeDel(){pendingDel=null;$('dscrim').classList.remove('open');$('dmodal').classList.remove('open');}
+function confirmDel(){
+  if(!pendingDel)return;
+  const wasCurrent=(currentId===pendingDel);
+  cases=cases.filter(c=>c.id!==pendingDel);
+  if(wasCurrent)currentId=cases[0]?cases[0].id:null;
+  closeDel();renderCases();
+  if(currentId)loadCase();
 }
 
 /* ---- load a case into Assess/Profile ---- */
 function loadCase(){
   const c=cur();
+  if(!c){$('assessName').textContent='No assessment selected';$('assessCrumb').textContent='—';return;}
   $('assessName').textContent=c.name;
   $('assessCrumb').textContent='CASE '+c.no+' · DRAFT';
   $('profileCrumb').textContent=c.name.toUpperCase()+' · '+c.no;
@@ -441,7 +484,7 @@ function go(v){
   window.scrollTo(0,0);
 }
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeNew();closeDrawer();}
+  if(e.key==='Escape'){closeNew();closeDrawer();closeDel();}
   if(e.key==='Enter'&&$('nmodal').classList.contains('open'))createCase();
 });
 
