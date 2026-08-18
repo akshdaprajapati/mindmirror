@@ -30,7 +30,6 @@
 
   .app{position:relative;z-index:1;display:grid;grid-template-columns:236px 1fr;gap:22px;max-width:1240px;margin:0 auto;padding:22px;min-height:100vh}
 
-  /* sidebar */
   .side{position:sticky;top:22px;align-self:start;height:calc(100vh - 44px);background:var(--card);border:1px solid var(--line-2);border-radius:26px;box-shadow:var(--shadow);padding:20px 16px;display:flex;flex-direction:column}
   .brand{display:flex;align-items:center;gap:11px;padding:4px 6px 18px;border-bottom:1px solid var(--line);margin-bottom:14px}
   .brand .logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(150deg,var(--peri),#8B79F0);display:grid;place-items:center;flex:none;box-shadow:var(--shadow-sm)}
@@ -48,28 +47,23 @@
   .side .who .nm{font-weight:600;font-size:13px}
   .side .who .rl{font-size:10px;color:var(--ink-faint);font-family:var(--ff-m)}
 
-  /* main */
   .main{min-width:0}
   .head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
   .title h2{font-family:var(--ff-d);font-weight:600;font-size:27px;margin:0;letter-spacing:-.01em}
   .title .crumb{font-family:var(--ff-m);font-size:11px;color:var(--ink-faint);letter-spacing:.04em;margin-top:3px}
   .head .right{display:flex;align-items:center;gap:12px}
-
   .view.hidden{display:none}
 
-  /* small ui atoms */
   .chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--ff-m);font-size:10.5px;font-weight:700;letter-spacing:.03em;padding:6px 11px;border-radius:999px}
   .chip.peri{background:var(--peri-wash);color:var(--peri)}
   .chip.mint{background:var(--mint-wash);color:#16916a}
   .chip.blush{background:var(--blush-wash);color:#c84f7e}
   .chip.butter{background:var(--butter-wash);color:#a9750c}
-  .chip.line{background:#fff;border:1px solid var(--line);color:var(--ink-soft)}
-  .btn{font-family:var(--ff-b);font-weight:600;font-size:13px;padding:10px 16px;border-radius:13px;border:none;cursor:pointer}
+  .btn{font-family:var(--ff-b);font-weight:600;font-size:13px;padding:10px 16px;border-radius:13px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
   .btn.solid{background:var(--ink);color:#fff}.btn.solid:hover{background:var(--peri)}
   .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink-soft)}
-  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .btn.ghost:hover{border-color:var(--peri-soft)}
 
-  /* CASELOAD */
   .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
   .case{background:var(--card);border:1px solid var(--line-2);border-radius:22px;box-shadow:var(--shadow-sm);padding:18px;cursor:pointer;transition:.18s;text-align:left;font-family:inherit}
   .case:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
@@ -79,7 +73,6 @@
   .case .mb i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--peri),var(--peri-soft))}
   .case .foot{display:flex;align-items:center;justify-content:space-between;font-family:var(--ff-m);font-size:10.5px;color:var(--ink-faint)}
 
-  /* ASSESS */
   .sumbar{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--line-2);border-radius:20px;box-shadow:var(--shadow-sm);padding:14px 20px;margin-bottom:8px}
   .sumbar .tot{font-family:var(--ff-d);font-weight:600;font-size:30px;line-height:1}
   .sumbar .tot small{font-family:var(--ff-m);font-size:13px;color:var(--ink-faint);font-weight:400}
@@ -112,7 +105,6 @@
   .flag{position:absolute;top:0;right:0;font-family:var(--ff-m);font-size:9px;font-weight:700;padding:4px 9px;border-bottom-left-radius:10px}
   .flag.ok{background:var(--mint-wash);color:#16916a}.flag.ovr{background:var(--butter-wash);color:#a9750c}
 
-  /* PROFILE */
   .pcols{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
   .ring-card{background:var(--card);border:1px solid var(--line-2);border-radius:22px;box-shadow:var(--shadow);padding:22px;text-align:center}
   .big-ring{--p:0;width:168px;height:168px;border-radius:50%;margin:6px auto;background:conic-gradient(var(--peri) calc(var(--p)*1%),var(--peri-wash) 0);display:grid;place-items:center;position:relative}
@@ -131,7 +123,6 @@
   .ref .rn{font-family:var(--ff-m);font-weight:700;font-size:17px;color:#1d7fb0}
   .ref .rl{font-size:10px;color:var(--ink-soft);margin-top:3px}
 
-  /* TRUST */
   .tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
   .tile{background:var(--card);border:1px solid var(--line-2);border-radius:20px;box-shadow:var(--shadow-sm);padding:18px}
   .tile .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;margin-bottom:12px}
@@ -142,7 +133,6 @@
   .audit{font-family:var(--ff-m);font-size:11.5px;color:var(--ink-soft);line-height:1.9;background:var(--card);border:1px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-sm);padding:16px 18px;margin-top:14px}
   .audit .t{color:var(--peri);font-weight:700}
 
-  /* drawer */
   .scrim{position:fixed;inset:0;background:rgba(20,16,38,.4);z-index:60;opacity:0;pointer-events:none;transition:.25s}
   .scrim.open{opacity:1;pointer-events:auto}
   .drawer{position:fixed;top:0;right:0;height:100vh;width:400px;max-width:92vw;background:#fff;z-index:61;transform:translateX(110%);transition:transform .32s cubic-bezier(.2,.9,.3,1);box-shadow:-20px 0 60px -20px rgba(43,36,64,.5);display:flex;flex-direction:column}
@@ -159,6 +149,14 @@
   .src p{margin:0;font-size:12.5px;line-height:1.5}
   .hl{background:var(--butter-wash);padding:1px 3px;border-radius:4px}
   .disc{font-size:11px;color:var(--ink-faint);line-height:1.45;background:#FAF8FF;border:1px dashed var(--line);border-radius:12px;padding:11px 12px}
+  .empty{font-size:12.5px;color:var(--ink-faint);text-align:center;padding:30px 10px}
+
+  .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;z-index:61;width:380px;max-width:92vw;background:#fff;border-radius:22px;box-shadow:0 30px 70px -20px rgba(43,36,64,.55);padding:22px}
+  .modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);transition:.24s}
+  .modal .ek{font-family:var(--ff-m);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--peri);font-weight:700;margin-bottom:12px}
+  .modal input{width:100%;font-family:var(--ff-b);font-size:14px;padding:12px 14px;border:1.5px solid var(--line);border-radius:13px;outline:none;color:var(--ink)}
+  .modal input:focus{border-color:var(--peri-soft)}
+  .modal .mrow{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 
   @media (max-width:980px){
     .app{grid-template-columns:1fr}
@@ -176,7 +174,6 @@
 <div class="blob a"></div><div class="blob b"></div>
 
 <div class="app">
-  <!-- SIDEBAR -->
   <aside class="side">
     <div class="brand">
       <div class="logo">
@@ -184,39 +181,21 @@
       </div>
       <div><b>MindMirror</b><small>PCL‑R SUPPORT</small></div>
     </div>
-    <button class="navbtn on" id="n-case" onclick="go('case')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg>Caseload<span class="n">3</span></button>
-    <button class="navbtn" id="n-assess" onclick="go('assess')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9M3 20l1-4 11-11 3 3-11 11z"/></svg>Assess<span class="n" id="nav-done">17</span></button>
+    <button class="navbtn on" id="n-case" onclick="go('case')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg>Caseload<span class="n" id="navCase">3</span></button>
+    <button class="navbtn" id="n-assess" onclick="go('assess')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9M3 20l1-4 11-11 3 3-11 11z"/></svg>Assess<span class="n" id="nav-done">0</span></button>
     <button class="navbtn" id="n-profile" onclick="go('profile')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Profile</button>
     <button class="navbtn" id="n-trust" onclick="go('trust')"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7z"/></svg>Trust</button>
     <div class="who"><div class="av">IM</div><div><div class="nm">Dr. Imran</div><div class="rl">FORENSIC</div></div></div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
-
     <!-- CASELOAD -->
     <section class="view" id="v-case">
-      <div class="head"><div class="title"><h2>Caseload</h2><div class="crumb">3 ASSESSMENTS · TODAY</div></div></div>
-      <div class="grid3">
-        <button class="case" onclick="go('assess')">
-          <div class="av" style="background:linear-gradient(150deg,#6C5CE7,#8B79F0)">AS</div>
-          <div class="nm">A. Sharma</div>
-          <div class="mb"><i style="width:85%"></i></div>
-          <div class="foot"><span>17 / 20</span><span class="chip peri">RESUME</span></div>
-        </button>
-        <button class="case" onclick="go('assess')">
-          <div class="av" style="background:linear-gradient(150deg,#FF9EC0,#F97aa6)">PN</div>
-          <div class="nm">P. Nair</div>
-          <div class="mb"><i style="width:12%"></i></div>
-          <div class="foot"><span>2 / 20</span><span class="chip blush">NEW</span></div>
-        </button>
-        <button class="case" onclick="go('profile')">
-          <div class="av" style="background:linear-gradient(150deg,#46C79B,#2fb487)">RI</div>
-          <div class="nm">R. Iyer</div>
-          <div class="mb"><i style="width:100%"></i></div>
-          <div class="foot"><span>20 / 20</span><span class="chip butter">SIGN‑OFF</span></div>
-        </button>
+      <div class="head">
+        <div class="title"><h2>Caseload</h2><div class="crumb"><span id="caseCount">3</span> ASSESSMENTS · TODAY</div></div>
+        <button class="btn solid" onclick="openNew()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>New assessment</button>
       </div>
+      <div class="grid3" id="caseGrid"></div>
       <div class="sec">This week</div>
       <div class="grid3">
         <div class="tile"><div class="big">12</div><div class="lb">Assessments supported</div></div>
@@ -228,7 +207,7 @@
     <!-- ASSESS -->
     <section class="view hidden" id="v-assess">
       <div class="head">
-        <div class="title"><h2>A. Sharma</h2><div class="crumb">CASE #4821 · DRAFT</div></div>
+        <div class="title"><h2 id="assessName">—</h2><div class="crumb" id="assessCrumb">—</div></div>
         <div class="right"><span class="chip peri">AI SUGGESTS · YOU CONFIRM</span><button class="btn solid" onclick="go('profile')">Profile →</button></div>
       </div>
       <div class="sumbar">
@@ -244,7 +223,7 @@
     <!-- PROFILE -->
     <section class="view hidden" id="v-profile">
       <div class="head">
-        <div class="title"><h2>Profile</h2><div class="crumb">A. SHARMA · #4821</div></div>
+        <div class="title"><h2>Profile</h2><div class="crumb" id="profileCrumb">—</div></div>
         <div class="right"><span class="chip butter">DRAFT — UNSIGNED</span><button class="btn solid">Sign &amp; export</button></div>
       </div>
       <div class="pcols">
@@ -275,23 +254,26 @@
         <div class="tile"><div class="ic" style="background:var(--butter-wash)"><svg width="20" height="20" fill="none" stroke="#a9750c" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/></svg></div><div class="big">11/12</div><div class="lb">Fairness checks pass</div><div class="tl"><i style="width:92%;background:linear-gradient(90deg,#FFC95C,#FF9EC0)"></i></div></div>
         <div class="tile"><div class="ic" style="background:var(--sky-wash)"><svg width="20" height="20" fill="none" stroke="#1d7fb0" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><div class="big">In‑house</div><div class="lb">Encrypted, access‑logged</div></div>
       </div>
-      <div class="sec">Audit trail · #4821</div>
-      <div class="audit">
-        <span class="t">09:12</span> · Suggestions generated · 20 items<br>
-        <span class="t">09:31</span> · Item 5 overridden · AI 2 → clinician 1<br>
-        <span class="t">09:44</span> · Evidence reviewed · items 6, 8, 16<br>
-        <span class="t">—:—</span> · Awaiting sign‑off
-      </div>
+      <div class="sec">Audit trail · <span id="auditNo">#4821</span></div>
+      <div class="audit" id="auditBody"></div>
     </section>
   </main>
 </div>
 
-<!-- drawer -->
+<!-- evidence drawer -->
 <div class="scrim" id="scrim" onclick="closeDrawer()"></div>
 <aside class="drawer" id="drawer">
   <div class="dhead"><button class="x" onclick="closeDrawer()">✕</button><div class="ek" id="d-tag">EVIDENCE</div><h3 id="d-title">—</h3></div>
   <div class="dbody" id="d-body"></div>
 </aside>
+
+<!-- new assessment modal -->
+<div class="scrim" id="nscrim" onclick="closeNew()"></div>
+<div class="modal" id="nmodal" role="dialog" aria-modal="true" aria-label="New assessment">
+  <div class="ek">New assessment</div>
+  <input id="nname" placeholder="Patient name — e.g. S. Menon" autocomplete="off">
+  <div class="mrow"><button class="btn ghost" onclick="closeNew()">Cancel</button><button class="btn solid" onclick="createCase()">Create</button></div>
+</div>
 
 <script>
 const ITEMS=[
@@ -317,7 +299,22 @@ const ITEMS=[
  {n:20,f:'add',label:'Criminal versatility',ai:1,conf:59,why:'Offences span a moderate range.',ev:[['Record','Charges across <span class="hl">three categories.</span>']]},
 ];
 const lab={0:'Absent',1:'Maybe',2:'Present'};
-const state={};
+const $=id=>document.getElementById(id);
+
+/* ---- per-case state ---- */
+function seed(k){const o={};ITEMS.slice(0,k).forEach(it=>o[it.n]=(it.n===5?1:it.ai));return o;}
+let cases=[
+  {id:'c1',name:'A. Sharma',init:'AS',grad:'linear-gradient(150deg,#6C5CE7,#8B79F0)',no:'#4821',ratings:seed(17)},
+  {id:'c2',name:'P. Nair',init:'PN',grad:'linear-gradient(150deg,#FF9EC0,#F97aa6)',no:'#4822',ratings:seed(2)},
+  {id:'c3',name:'R. Iyer',init:'RI',grad:'linear-gradient(150deg,#46C79B,#2fb487)',no:'#4823',ratings:seed(20)},
+];
+let currentId='c1';
+let seq=3, nextNo=4824;
+const grads=['linear-gradient(150deg,#73C2EE,#4aa8dd)','linear-gradient(150deg,#FFC95C,#f5a623)','linear-gradient(150deg,#8B79F0,#6C5CE7)','linear-gradient(150deg,#46C79B,#2fb487)','linear-gradient(150deg,#FF9EC0,#F97aa6)'];
+const cur=()=>cases.find(c=>c.id===currentId);
+const R=()=>cur().ratings;
+
+/* ---- item cards (static structure, built once) ---- */
 const itemHTML=it=>`
  <div class="item" id="it${it.n}">
    <div class="flag ok" style="display:none">✓</div><div class="flag ovr" style="display:none">EDITED</div>
@@ -329,30 +326,90 @@ const itemHTML=it=>`
    </div>
    <div class="rate">${[0,1,2].map(v=>`<button onclick="rate(${it.n},${v})" data-v="${v}">${v}</button>`).join('')}</div>
  </div>`;
-function mount(){
-  f1items.innerHTML=ITEMS.filter(i=>i.f==='f1').map(itemHTML).join('');
-  f2items.innerHTML=ITEMS.filter(i=>i.f==='f2').map(itemHTML).join('');
-  additems.innerHTML=ITEMS.filter(i=>i.f==='add').map(itemHTML).join('');
+function mountItems(){
+  $('f1-items').innerHTML=ITEMS.filter(i=>i.f==='f1').map(itemHTML).join('');
+  $('f2-items').innerHTML=ITEMS.filter(i=>i.f==='f2').map(itemHTML).join('');
+  $('add-items').innerHTML=ITEMS.filter(i=>i.f==='add').map(itemHTML).join('');
 }
-const $=id=>document.getElementById(id);
-const f1items=$('f1-items'),f2items=$('f2-items'),additems=$('add-items');
+
+/* ---- caseload cards ---- */
+function statusChip(done){
+  if(done===0) return '<span class="chip blush">NEW</span>';
+  if(done>=20) return '<span class="chip butter">SIGN‑OFF</span>';
+  return '<span class="chip peri">RESUME</span>';
+}
+function renderCases(){
+  $('caseGrid').innerHTML=cases.map(c=>{
+    const done=Object.keys(c.ratings).length;
+    return `<button class="case" onclick="openCase('${c.id}')">
+      <div class="av" style="background:${c.grad}">${c.init}</div>
+      <div class="nm">${c.name}</div>
+      <div class="mb"><i style="width:${done/20*100}%"></i></div>
+      <div class="foot"><span>${done} / 20</span>${statusChip(done)}</div>
+    </button>`;
+  }).join('');
+  $('caseCount').textContent=cases.length;
+  $('navCase').textContent=cases.length;
+}
+
+/* ---- load a case into Assess/Profile ---- */
+function loadCase(){
+  const c=cur();
+  $('assessName').textContent=c.name;
+  $('assessCrumb').textContent='CASE '+c.no+' · DRAFT';
+  $('profileCrumb').textContent=c.name.toUpperCase()+' · '+c.no;
+  $('auditNo').textContent=c.no;
+  ITEMS.forEach(it=>{
+    const box=$('it'+it.n);
+    box.classList.remove('confirmed');
+    box.querySelectorAll('.rate button').forEach(b=>b.classList.remove('on'));
+    box.querySelector('.flag.ok').style.display='none';
+    box.querySelector('.flag.ovr').style.display='none';
+    const v=c.ratings[it.n];
+    if(v!==undefined){
+      box.classList.add('confirmed');
+      box.querySelector('.rate button[data-v="'+v+'"]').classList.add('on');
+      const ovr=v!==it.ai;
+      box.querySelector('.flag.ovr').style.display=ovr?'block':'none';
+      box.querySelector('.flag.ok').style.display=ovr?'none':'block';
+    }
+  });
+  recompute();
+}
+function openCase(id){currentId=id;loadCase();go('assess');}
+
 function rate(n,v){
-  state[n]=v;const it=ITEMS.find(i=>i.n===n);const box=$('it'+n);
+  R()[n]=v;const it=ITEMS.find(i=>i.n===n);const box=$('it'+n);
   box.querySelectorAll('.rate button').forEach(b=>b.classList.toggle('on',+b.dataset.v===v));
   box.classList.add('confirmed');const ovr=v!==it.ai;
   box.querySelector('.flag.ovr').style.display=ovr?'block':'none';
   box.querySelector('.flag.ok').style.display=ovr?'none':'block';
   recompute();
 }
-const sub=f=>ITEMS.filter(i=>i.f===f).reduce((s,i)=>s+(state[i.n]??0),0);
+const sub=f=>ITEMS.filter(i=>i.f===f).reduce((s,i)=>s+(R()[i.n]??0),0);
 function recompute(){
-  const f1=sub('f1'),f2=sub('f2'),add=sub('add'),total=f1+f2+add,done=Object.keys(state).length;
+  const f1=sub('f1'),f2=sub('f2'),add=sub('add'),total=f1+f2+add,done=Object.keys(R()).length;
   $('tot').innerHTML=total+'<small> / 40</small>';$('f1n').textContent=f1;$('f2n').textContent=f2;
   $('prog').style.width=(done/20*100)+'%';$('nav-done').textContent=done;
   $('insTotal').textContent=total;$('bigRing').style.setProperty('--p',total/40*100);
   $('ins-f1').textContent=f1+'/16';$('ins-f2').textContent=f2+'/18';$('ins-add').textContent=add+'/6';
   $('bar-f1').style.width=(f1/16*100)+'%';$('bar-f2').style.width=(f2/18*100)+'%';$('bar-add').style.width=(add/6*100)+'%';
+  renderAudit(done);
 }
+function renderAudit(done){
+  const c=cur();
+  if(done===0){
+    $('auditBody').innerHTML=`<span class="t">—:—</span> · Assessment created · awaiting first rating`;
+    return;
+  }
+  let rows=`<span class="t">09:12</span> · Suggestions generated · 20 items<br>`;
+  const edits=ITEMS.filter(it=>c.ratings[it.n]!==undefined && c.ratings[it.n]!==it.ai);
+  if(edits.length){const e=edits[0];rows+=`<span class="t">09:31</span> · Item ${e.n} overridden · AI ${e.ai} → clinician ${c.ratings[e.n]}<br>`;}
+  rows+=`<span class="t">${done>=20?'09:58':'—:—'}</span> · ${done>=20?'Ready for sign‑off':'Awaiting '+(20-done)+' more item(s)'}`;
+  $('auditBody').innerHTML=rows;
+}
+
+/* ---- evidence drawer ---- */
 function openDrawer(n){
   const it=ITEMS.find(i=>i.n===n);
   $('d-tag').textContent='EVIDENCE · ITEM '+it.n;$('d-title').textContent=it.label;
@@ -362,14 +419,35 @@ function openDrawer(n){
   $('scrim').classList.add('open');$('drawer').classList.add('open');
 }
 function closeDrawer(){$('scrim').classList.remove('open');$('drawer').classList.remove('open');}
+
+/* ---- new assessment (opens a blank case) ---- */
+function openNew(){$('nscrim').classList.add('open');$('nmodal').classList.add('open');setTimeout(()=>$('nname').focus(),60);}
+function closeNew(){$('nscrim').classList.remove('open');$('nmodal').classList.remove('open');$('nname').value='';}
+function initials(name){return (name.replace(/[^A-Za-z ]/g,' ').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase())||'??';}
+function createCase(){
+  const name=$('nname').value.trim();if(!name){$('nname').focus();return;}
+  const id='c'+(++seq);
+  cases.unshift({id,name,init:initials(name),grad:grads[seq%grads.length],no:'#'+(nextNo++),ratings:{}});
+  renderCases();closeNew();
+  openCase(id); // jump straight into the blank assessment
+}
+
 const views=['case','assess','profile','trust'];
 function go(v){
   views.forEach(x=>$('v-'+x).classList.toggle('hidden',x!==v));
   document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('on'));
-  $('n-'+v).classList.add('on');window.scrollTo(0,0);
+  $('n-'+v).classList.add('on');
+  if(v==='case')renderCases();
+  window.scrollTo(0,0);
 }
-mount();
-ITEMS.slice(0,17).forEach(it=>rate(it.n,it.n===5?1:it.ai));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeNew();closeDrawer();}
+  if(e.key==='Enter'&&$('nmodal').classList.contains('open'))createCase();
+});
+
+mountItems();
+renderCases();
+loadCase();      // preload A. Sharma so nav badge / profile are populated
 go('case');
 </script>
 </body>
